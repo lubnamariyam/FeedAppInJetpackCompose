@@ -14,7 +14,9 @@ class FeedRepository(application: Application) {
         feedDao = database.feedDao()
     }
 
-    val readAllData : List<FeedEntity> =  feedDao.getAll()
+    fun readAllData() : LiveData<List<FeedEntity>>{
+        return  feedDao.getAll()
+    }
 
     suspend fun insertFeed(feedEntity: FeedEntity) {
         feedDao.insert(feedEntity)

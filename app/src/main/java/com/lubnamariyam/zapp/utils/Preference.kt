@@ -50,6 +50,7 @@ class Preference {
             }
         }
 
+
         /**
          * Clear preference manager is used to clear all data form SharedPreference, which we stored.
          *

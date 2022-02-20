@@ -7,8 +7,8 @@ import androidx.room.Query
 
 @Dao
 interface FeedDao {
-    @Query("SELECT * from feed_table")
-    fun getAll(): List<FeedEntity>
+    @Query("SELECT * FROM Feed_table")
+    fun getAll(): LiveData<List<FeedEntity>>
 
     @Insert
     suspend fun insert(feedEntity: FeedEntity)
