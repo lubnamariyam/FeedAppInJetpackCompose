@@ -7,6 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -29,21 +32,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lubnamariyam.zapp.R
+import com.lubnamariyam.zapp.model.FeedDataItem
+import com.lubnamariyam.zapp.ui.theme.VeryLightGray
+import com.lubnamariyam.zapp.viewModel.HomeViewModel
 import org.intellij.lang.annotations.JdkConstants
 
 @Composable
-fun Home(){
+fun Home(feed: List<FeedDataItem>){
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TopBar() },
-        content = { FeedCard() },
+        content = { FeedList(feed) },
         bottomBar = { BottomBar() }
     )
 }
+@Composable
+fun FeedList(feed : List<FeedDataItem>) {
+    LazyColumn(contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)) {
+        itemsIndexed(items = feed) { index, item ->
+            FeedCard(feed = item)
+        }
+    }
+}
 
 @Composable
-fun FeedCard(){
+fun FeedCard(feed : FeedDataItem){
     Card(
         modifier = Modifier.padding(8.dp, 4.dp),
         shape = RoundedCornerShape(8.dp),elevation = 4.dp
@@ -67,7 +81,7 @@ fun FeedCard(){
             Spacer(modifier = Modifier.padding(6.dp))
             Column(modifier =  Modifier.padding(all = 8.dp)) {
                 Text(
-                    text = "Jetpack Compose",
+                    text = feed.title,
                     style = MaterialTheme.typography.subtitle1,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -75,7 +89,7 @@ fun FeedCard(){
                     fontFamily = FontFamily.SansSerif
                 )
                 Text(
-                    text = "quia et suscipit nsuscipit recusandae consequuntur recusandae consequuntur recusandae consequuntur recusandae consequuntur maxLines = 1 maxLines = 1 maxLines = 1",
+                    text = feed.body,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.body2,
                     maxLines = 3,
@@ -198,5 +212,5 @@ fun BottomBar() {
 @Preview
 @Composable
 fun DefaultPreview(){
-    FeedCard()
+
 }
