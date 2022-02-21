@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
 import com.lubnamariyam.zapp.R
 import com.lubnamariyam.zapp.database.FeedEntity
 import com.lubnamariyam.zapp.ui.theme.Purple200
@@ -38,7 +39,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Composable
-fun SearchScreen(feed: State<List<FeedEntity>>,navController: NavController){
+fun SearchScreen(feed: LazyPagingItems<FeedEntity>, navController: NavController){
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     Scaffold(
@@ -58,14 +59,14 @@ fun SearchScreen(feed: State<List<FeedEntity>>,navController: NavController){
 
 
 @Composable
-fun FeedSearchList(feed: State<List<FeedEntity>>,state: MutableState<TextFieldValue>) {
-    var persons = feed
+fun FeedSearchList(feed: LazyPagingItems<FeedEntity>,state: MutableState<TextFieldValue>) {
+    var persons = feed.itemSnapshotList.items
     var filteredPerson: ArrayList<FeedEntity> = arrayListOf()
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         val searchedText = state.value.text
         if(searchedText.isNotEmpty()){
             val resultList = ArrayList<FeedEntity>()
-            for (person in persons.value) {
+            for (person in persons) {
                 if (person.title.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))||
                     person.body.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))
                 ) {

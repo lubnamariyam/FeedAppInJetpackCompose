@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.lubnamariyam.zapp.model.FeedDataItem
 import com.lubnamariyam.zapp.ui.view.*
 import com.lubnamariyam.zapp.viewModel.FeedViewModel
@@ -22,12 +23,12 @@ fun NavGraph(feedViewModel: FeedViewModel){
         }
         composable("home_screen") {
             val activity = (LocalContext.current as? Activity)
-            val data = feedViewModel.getAllProduct().observeAsState(arrayListOf())
+            val data = feedViewModel.getPagingData.collectAsLazyPagingItems()
             Home(data,navController,feedViewModel,activity!!)
         }
 
         composable("search_screen") {
-            val data = feedViewModel.getAllProduct().observeAsState(arrayListOf())
+            val data = feedViewModel.getPagingData.collectAsLazyPagingItems()
             SearchScreen(data,navController)
         }
         composable("notification_screen") {

@@ -16,7 +16,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,13 +33,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import com.lubnamariyam.zapp.R
 import com.lubnamariyam.zapp.database.FeedEntity
 import com.lubnamariyam.zapp.viewModel.FeedViewModel
 
 @Composable
 fun Home(
-    feed: State<List<FeedEntity>>,
+    feed: LazyPagingItems<FeedEntity>,
     navController: NavController,
     feedViewModel: FeedViewModel, activity: Activity
 ) {
@@ -75,383 +80,372 @@ fun Home(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FeedCard(feed: State<List<FeedEntity>>, feedViewModel: FeedViewModel) {
+fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
-        items(
-            items = feed.value,
-            itemContent = {
-                Card(
-                    modifier = Modifier.padding(8.dp, 4.dp),
-                    shape = RoundedCornerShape(8.dp), elevation = 4.dp
-                ) {
-                    Column() {
-                        Row(modifier = Modifier.padding(all = 8.dp)) {
-                            Image(
-                                painter = painterResource(id = R.drawable.profile_pic),
-                                contentDescription = "contact profile picture",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .border(1.5.dp, Color.LightGray, CircleShape)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Column() {
-                                Text(
-                                    text = "Ricardlo Chandler",
-                                    color = Color.Black,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.subtitle2
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "Android Developer at SkyWorks",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.body2
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    text = "12h .edited",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.body2
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(6.dp))
-                        Column(modifier = Modifier.padding(all = 8.dp)) {
-                            Text(
-                                text = it.title,
-                                style = MaterialTheme.typography.subtitle1,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(bottom = 10.dp),
-                                fontFamily = FontFamily.SansSerif
-                            )
-                            Text(
-                                text = it.body,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.body2,
-                                maxLines = 3,
-                                modifier = Modifier.padding(),
-                                fontFamily = FontFamily.SansSerif
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Divider(
-                            color = Color.LightGray,
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                        Row(
+        itemsIndexed(feed) { index, value ->
+            Card(
+                modifier = Modifier.padding(8.dp, 4.dp),
+                shape = RoundedCornerShape(8.dp), elevation = 4.dp
+            ) {
+                Column() {
+                    Row(modifier = Modifier.padding(all = 8.dp)) {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_pic),
+                            contentDescription = "contact profile picture",
                             modifier = Modifier
-                                .height(46.dp)
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(onClick = {
-                                val likecount = it.likes + 1
-                                feedViewModel.updateFeed(it.id, likecount)
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_like),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_comment),
-                                    tint = Color.DarkGray,
-                                    contentDescription = "Comment",
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    Icons.Filled.Share,
-                                    contentDescription = "Share",
-                                    tint = Color.DarkGray,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(1.5.dp, Color.LightGray, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column() {
                             Text(
-                                text = "${it.likes} likes",
-                                modifier = Modifier
-                                    .padding(end = 2.dp),
+                                text = "Ricardlo Chandler",
                                 color = Color.Black,
-                                fontWeight = FontWeight.Bold, textAlign = TextAlign.End
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.subtitle2
                             )
-
-
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Android Developer at SkyWorks",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.body2
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = "12h .edited",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.body2
+                            )
                         }
                     }
+                    Spacer(modifier = Modifier.padding(6.dp))
+                    Column(modifier = Modifier.padding(all = 8.dp)) {
+                        Text(
+                            text = value!!.title,
+                            style = MaterialTheme.typography.subtitle1,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(bottom = 10.dp),
+                            fontFamily = FontFamily.SansSerif
+                        )
+                        Text(
+                            text = value.body,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.body2,
+                            maxLines = 3,
+                            modifier = Modifier.padding(),
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .height(46.dp)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = {
+                            val likecount = value!!.likes + 1
+                            feedViewModel.updateFeed(value.id, likecount)
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_like),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_comment),
+                                tint = Color.DarkGray,
+                                contentDescription = "Comment",
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                Icons.Filled.Share,
+                                contentDescription = "Share",
+                                tint = Color.DarkGray,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "${value!!.likes} likes",
+                            modifier = Modifier
+                                .padding(end = 2.dp),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold, textAlign = TextAlign.End
+                        )
+
+
+                    }
                 }
-            })
+            }
+        }
     })
 
 }
 
 @Composable
-fun SortList(feed: State<List<FeedEntity>>, feedViewModel: FeedViewModel) {
+fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
-        val sortasc = arrayListOf<FeedEntity>()
-        feed.value.sortedBy { it.title }.forEach {
-            sortasc.add(it)
-        }
-        items(
-            items = sortasc, itemContent = {
-                Card(
-                    modifier = Modifier.padding(8.dp, 4.dp),
-                    shape = RoundedCornerShape(8.dp), elevation = 4.dp
-                ) {
-                    Column() {
-                        Row(modifier = Modifier.padding(all = 8.dp)) {
-                            Image(
-                                painter = painterResource(id = R.drawable.profile_pic),
-                                contentDescription = "contact profile picture",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .border(1.5.dp, Color.LightGray, CircleShape)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Column() {
-                                Text(
-                                    text = "Ricardlo Chandler",
-                                    color = Color.Black,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.subtitle2
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "Android Developer at Zoho",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.body2
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    text = "12h .edited",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.body2
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(6.dp))
-                        Column(modifier = Modifier.padding(all = 8.dp)) {
-                            Text(
-                                text = it.title,
-                                style = MaterialTheme.typography.subtitle1,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(bottom = 10.dp),
-                                fontFamily = FontFamily.SansSerif
-                            )
-                            Text(
-                                text = it.body,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.body2,
-                                maxLines = 3,
-                                modifier = Modifier.padding(),
-                                fontFamily = FontFamily.SansSerif
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Divider(
-                            color = Color.LightGray,
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                        Row(
+        val sortAsc = arrayListOf<FeedEntity>()
+        feed.itemSnapshotList.items.sortedBy { it.title }.forEach { sortAsc.add(it) }
+        items(items = sortAsc , itemContent ={
+            Card(
+                modifier = Modifier.padding(8.dp, 4.dp),
+                shape = RoundedCornerShape(8.dp), elevation = 4.dp
+            ) {
+                Column() {
+                    Row(modifier = Modifier.padding(all = 8.dp)) {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_pic),
+                            contentDescription = "contact profile picture",
                             modifier = Modifier
-                                .height(46.dp)
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(onClick = {
-                                val likecount = it.likes + 1
-                                feedViewModel.updateFeed(it.id, likecount)
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_like),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_comment),
-                                    tint = Color.DarkGray,
-                                    contentDescription = "Comment",
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    Icons.Filled.Share,
-                                    contentDescription = "Share",
-                                    tint = Color.DarkGray,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(1.5.dp, Color.LightGray, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column() {
                             Text(
-                                text = "${it.likes} likes",
-                                modifier = Modifier.padding(end = 2.dp),
+                                text = "Ricardlo Chandler",
                                 color = Color.Black,
-                                fontWeight = FontWeight.Bold, textAlign = TextAlign.End
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Android Developer at Zoho",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.body2
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = "12h .edited",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.body2
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.padding(6.dp))
+                    Column(modifier = Modifier.padding(all = 8.dp)) {
+                        Text(
+                            text = it.title,
+                            style = MaterialTheme.typography.subtitle1,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(bottom = 10.dp),
+                            fontFamily = FontFamily.SansSerif
+                        )
+                        Text(
+                            text = it.body,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.body2,
+                            maxLines = 3,
+                            modifier = Modifier.padding(),
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .height(46.dp)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = {
+                            val likecount = it.likes + 1
+                            feedViewModel.updateFeed(it.id, likecount)
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_like),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_comment),
+                                tint = Color.DarkGray,
+                                contentDescription = "Comment",
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                Icons.Filled.Share,
+                                contentDescription = "Share",
+                                tint = Color.DarkGray,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "${it.likes} likes",
+                            modifier = Modifier.padding(end = 2.dp),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold, textAlign = TextAlign.End
+                        )
+                    }
                 }
             }
-        )
+        } )
     })
 }
 
 @Composable
-fun SortListDesc(feed: State<List<FeedEntity>>, feedViewModel: FeedViewModel) {
+fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
-        val sortasc = arrayListOf<FeedEntity>()
-        feed.value.sortedByDescending { it.title }.forEach {
-            sortasc.add(it)
-        }
-        items(
-            items = sortasc, itemContent = {
-                Card(
-                    modifier = Modifier.padding(8.dp, 4.dp),
-                    shape = RoundedCornerShape(8.dp), elevation = 4.dp
-                ) {
-                    Column() {
-                        Row(modifier = Modifier.padding(all = 8.dp)) {
-                            Image(
-                                painter = painterResource(id = R.drawable.profile_pic),
-                                contentDescription = "contact profile picture",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .border(1.5.dp, Color.LightGray, CircleShape)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Column() {
-                                Text(
-                                    text = "Ricardlo Chandler",
-                                    color = Color.Black,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.subtitle2
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "Android Developer at Zoho",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.body2
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    text = "12h .edited",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.body2
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(6.dp))
-                        Column(modifier = Modifier.padding(all = 8.dp)) {
-                            Text(
-                                text = it.title,
-                                style = MaterialTheme.typography.subtitle1,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(bottom = 10.dp),
-                                fontFamily = FontFamily.SansSerif
-                            )
-                            Text(
-                                text = it.body,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.body2,
-                                maxLines = 3,
-                                modifier = Modifier.padding(),
-                                fontFamily = FontFamily.SansSerif
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Divider(
-                            color = Color.LightGray,
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                        Row(
+        val sortDesc = arrayListOf<FeedEntity>()
+        feed.itemSnapshotList.items.sortedByDescending { it.title }.forEach { sortDesc.add(it) }
+        items(items = sortDesc , itemContent ={
+            Card(
+                modifier = Modifier.padding(8.dp, 4.dp),
+                shape = RoundedCornerShape(8.dp), elevation = 4.dp
+            ) {
+                Column() {
+                    Row(modifier = Modifier.padding(all = 8.dp)) {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_pic),
+                            contentDescription = "contact profile picture",
                             modifier = Modifier
-                                .height(46.dp)
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(onClick = {
-                                val likecount = it.likes + 1
-                                feedViewModel.updateFeed(it.id, likecount)
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_like),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_comment),
-                                    tint = Color.DarkGray,
-                                    contentDescription = "Comment",
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    Icons.Filled.Share,
-                                    contentDescription = "Share",
-                                    tint = Color.DarkGray,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .size(24.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(1.5.dp, Color.LightGray, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column() {
                             Text(
-                                text = "${it.likes} likes",
-                                modifier = Modifier.padding(end = 2.dp),
+                                text = "Ricardlo Chandler",
                                 color = Color.Black,
-                                fontWeight = FontWeight.Bold, textAlign = TextAlign.End
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Android Developer at Zoho",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.body2
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = "12h .edited",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.body2
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.padding(6.dp))
+                    Column(modifier = Modifier.padding(all = 8.dp)) {
+                        Text(
+                            text = it.title,
+                            style = MaterialTheme.typography.subtitle1,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(bottom = 10.dp),
+                            fontFamily = FontFamily.SansSerif
+                        )
+                        Text(
+                            text = it.body,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.body2,
+                            maxLines = 3,
+                            modifier = Modifier.padding(),
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .height(46.dp)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = {
+                            val likecount = it.likes + 1
+                            feedViewModel.updateFeed(it.id, likecount)
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_like),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_comment),
+                                tint = Color.DarkGray,
+                                contentDescription = "Comment",
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                Icons.Filled.Share,
+                                contentDescription = "Share",
+                                tint = Color.DarkGray,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "${it.likes} likes",
+                            modifier = Modifier.padding(end = 2.dp),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold, textAlign = TextAlign.End
+                        )
+                    }
                 }
             }
-        )
+        } )
     })
 }
-
 
 @Composable
 fun TopBar(sort: MutableState<Int>) {
@@ -502,7 +496,6 @@ fun TopBar(sort: MutableState<Int>) {
         elevation = 10.dp
     )
 }
-
 
 @Composable
 fun BottomBar(navController: NavController) {
