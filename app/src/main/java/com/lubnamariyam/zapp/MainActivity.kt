@@ -2,6 +2,7 @@ package com.lubnamariyam.zapp
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val sharedIdValue = sharedPreferences.getInt("id_key", 0)
+
                     if (sharedIdValue == 1) {
                         NavGraph(feedViewModel!!)
                     } else {

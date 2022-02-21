@@ -59,7 +59,7 @@ fun SplashScreen(navController: NavController) {
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Z APP",
+            Text(text = "Z App",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium, textAlign = TextAlign.Center , color = Purple500 , fontFamily = FontFamily.SansSerif
             )

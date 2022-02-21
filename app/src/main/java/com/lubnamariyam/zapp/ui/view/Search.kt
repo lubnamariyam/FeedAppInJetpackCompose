@@ -67,8 +67,7 @@ fun FeedSearchList(feed: LazyPagingItems<FeedEntity>,state: MutableState<TextFie
         if(searchedText.isNotEmpty()){
             val resultList = ArrayList<FeedEntity>()
             for (person in persons) {
-                if (person.title.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))||
-                    person.body.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))
+                if (person.title.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))
                 ) {
                     resultList.add(person)
                 }
@@ -167,13 +166,13 @@ fun FeedSearchCard(it: FeedEntity){
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .border(1.5.dp, Color.LightGray, CircleShape)
+                        .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column() {
                     Text(
                         text = "Ricardlo Chandler",
-                        color = Color.Black,
+                        color = MaterialTheme.colors.primary,
                         modifier = Modifier.padding(start = 4.dp),
                         style = MaterialTheme.typography.subtitle2
                     )

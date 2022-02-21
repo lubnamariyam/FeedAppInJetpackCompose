@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.lubnamariyam.zapp.R
@@ -63,8 +64,10 @@ fun Home(
                     SortListDesc(feed, feedViewModel)
                 }
             }
+            Spacer(modifier = Modifier.padding(bottom = 60.dp))
         },
         bottomBar = { BottomBar(navController) }
+
     )
     BackHandler() {
         val alertDialogBuilder = AlertDialog.Builder(activity)
@@ -95,19 +98,19 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .border(1.5.dp, Color.LightGray, CircleShape)
+                                .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Column() {
                             Text(
                                 text = "Ricardlo Chandler",
-                                color = Color.Black,
+                                color = MaterialTheme.colors.primary,
                                 modifier = Modifier.padding(start = 4.dp),
                                 style = MaterialTheme.typography.subtitle2
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "Android Developer at SkyWorks",
+                                text = "Android Developer at Zoho",
                                 color = Color.Gray,
                                 modifier = Modifier.padding(start = 4.dp),
                                 style = MaterialTheme.typography.body2
@@ -125,11 +128,11 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                     Column(modifier = Modifier.padding(all = 8.dp)) {
                         Text(
                             text = value!!.title,
-                            style = MaterialTheme.typography.subtitle1,
+                            style = MaterialTheme.typography.body1,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 10.dp),
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif,
                         )
                         Text(
                             text = value.body,
@@ -137,7 +140,7 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             modifier = Modifier.padding(),
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif, color = Color.Gray
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
@@ -198,8 +201,17 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                     }
                 }
             }
+            feed.apply {
+                when (loadState.append) {
+                    is LoadState.Loading -> {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
         }
-    })
+    }
+    )
 
 }
 
@@ -221,13 +233,13 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .border(1.5.dp, Color.LightGray, CircleShape)
+                                .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Column() {
                             Text(
                                 text = "Ricardlo Chandler",
-                                color = Color.Black,
+                                color = MaterialTheme.colors.primary,
                                 modifier = Modifier.padding(start = 4.dp),
                                 style = MaterialTheme.typography.subtitle2
                             )
@@ -251,7 +263,7 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                     Column(modifier = Modifier.padding(all = 8.dp)) {
                         Text(
                             text = it.title,
-                            style = MaterialTheme.typography.subtitle1,
+                            style = MaterialTheme.typography.body1,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 10.dp),
@@ -263,7 +275,7 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             modifier = Modifier.padding(),
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif,color = Color.Gray
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
@@ -343,13 +355,13 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .border(1.5.dp, Color.LightGray, CircleShape)
+                                .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Column() {
                             Text(
                                 text = "Ricardlo Chandler",
-                                color = Color.Black,
+                                color = MaterialTheme.colors.primary,
                                 modifier = Modifier.padding(start = 4.dp),
                                 style = MaterialTheme.typography.subtitle2
                             )
@@ -373,7 +385,7 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                     Column(modifier = Modifier.padding(all = 8.dp)) {
                         Text(
                             text = it.title,
-                            style = MaterialTheme.typography.subtitle1,
+                            style = MaterialTheme.typography.body1,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 10.dp),
@@ -385,7 +397,7 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             modifier = Modifier.padding(),
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif,color = Color.Gray
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))

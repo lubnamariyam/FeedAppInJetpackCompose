@@ -15,13 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.*
 import com.lubnamariyam.zapp.R
 import com.lubnamariyam.zapp.ui.theme.Purple200
+import com.lubnamariyam.zapp.ui.theme.Purple500
 import com.lubnamariyam.zapp.ui.theme.VeryLightGray
+import java.time.format.TextStyle
 
 @Composable
 fun Settings(navController: NavController) {
@@ -34,6 +38,7 @@ fun Settings(navController: NavController) {
     })
 }
 
+@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun SettingsContent(){
     Column(modifier = Modifier
@@ -61,6 +66,11 @@ fun SettingsContent(){
             progress,
             modifier = Modifier.size(250.dp)
         )
+        
+        Text(text = "You're Upto Date!! \n No need to change the settings.." ,textAlign = TextAlign.Center , color = Color.LightGray,fontSize = 14.sp,fontFamily = FontFamily.SansSerif
+            ,fontWeight = FontWeight.Medium ,style = MaterialTheme.typography.h5.copy(
+                lineHeight = 25.sp,  // Here line height
+            ))
     }
 }
 
