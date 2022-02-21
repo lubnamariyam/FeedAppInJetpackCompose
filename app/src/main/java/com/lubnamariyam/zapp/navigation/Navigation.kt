@@ -22,14 +22,12 @@ fun NavGraph(feedViewModel: FeedViewModel){
         }
         composable("home_screen") {
             val data = feedViewModel.getAllProduct().observeAsState(arrayListOf())
-            Home(data,navController)
+            Home(data,navController,feedViewModel)
         }
 
         composable("search_screen") {
             val data = feedViewModel.getAllProduct().observeAsState(arrayListOf())
             SearchScreen(data)
         }
-
-
     }
 }

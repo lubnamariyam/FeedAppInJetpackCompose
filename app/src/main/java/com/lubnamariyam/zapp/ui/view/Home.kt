@@ -2,6 +2,7 @@ package com.lubnamariyam.zapp.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,10 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lubnamariyam.zapp.R
 import com.lubnamariyam.zapp.database.FeedEntity
+import com.lubnamariyam.zapp.viewModel.FeedViewModel
 import java.util.*
 
 @Composable
-fun Home(feed: State<List<FeedEntity>>, navController: NavController) {
+fun Home(feed: State<List<FeedEntity>>, navController: NavController , feedViewModel: FeedViewModel) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val sortitem = remember { mutableStateOf(0) }
     Scaffold(
@@ -38,17 +40,16 @@ fun Home(feed: State<List<FeedEntity>>, navController: NavController) {
         content = {
             when (sortitem.value) {
                 0 -> {
-                    FeedCard(feed)
+                    FeedCard(feed,feedViewModel)
                 }
                 1 -> {
-                    SortList(feed)
+                    SortList(feed,feedViewModel)
                 }
                 2 -> {
-                    SortListDesc(feed)
+                    SortListDesc(feed,feedViewModel)
                 }
             }
-        }
-            ,
+        },
         bottomBar = { BottomBar(navController) }
     )
 }
@@ -56,8 +57,7 @@ fun Home(feed: State<List<FeedEntity>>, navController: NavController) {
 
 
 @Composable
-fun FeedCard(feed: State<List<FeedEntity>>) {
-
+fun FeedCard(feed: State<List<FeedEntity>> , feedViewModel: FeedViewModel) {
     LazyColumn( content = {
         items(
             items = feed.value,
@@ -134,7 +134,10 @@ fun FeedCard(feed: State<List<FeedEntity>>) {
                                 contentDescription = "Like",
                                 modifier = Modifier
                                     .padding(2.dp)
-                                    .size(20.dp)
+                                    .size(20.dp).clickable {
+                                        val likecount = it.likes + 1
+                                        feedViewModel.updateFeed(it.id,likecount)
+                                    }
                             )
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_comment),
@@ -154,7 +157,7 @@ fun FeedCard(feed: State<List<FeedEntity>>) {
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = "10 likes",
+                                text = "${it.likes} likes",
                                 modifier = Modifier.padding(end = 2.dp),
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold, textAlign = TextAlign.End
@@ -167,7 +170,7 @@ fun FeedCard(feed: State<List<FeedEntity>>) {
 }
 
 @Composable
-fun SortList(feed: State<List<FeedEntity>>){
+fun SortList(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
     LazyColumn(content = {
         val sortasc = arrayListOf<FeedEntity>()
         feed.value.sortedBy { it.title }.forEach {
@@ -247,7 +250,10 @@ fun SortList(feed: State<List<FeedEntity>>){
                                 contentDescription = "Like",
                                 modifier = Modifier
                                     .padding(2.dp)
-                                    .size(20.dp)
+                                    .size(20.dp).clickable {
+                                        val likecount = it.likes + 1
+                                        feedViewModel.updateFeed(it.id,likecount)
+                                    }
                             )
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_comment),
@@ -267,7 +273,7 @@ fun SortList(feed: State<List<FeedEntity>>){
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = "10 likes",
+                                text = "${it.likes} likes",
                                 modifier = Modifier.padding(end = 2.dp),
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold, textAlign = TextAlign.End
@@ -281,7 +287,7 @@ fun SortList(feed: State<List<FeedEntity>>){
 }
 
 @Composable
-fun SortListDesc(feed: State<List<FeedEntity>>){
+fun SortListDesc(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
     LazyColumn(content = {
         val sortasc = arrayListOf<FeedEntity>()
         feed.value.sortedByDescending { it.title }.forEach {
@@ -361,7 +367,10 @@ fun SortListDesc(feed: State<List<FeedEntity>>){
                                 contentDescription = "Like",
                                 modifier = Modifier
                                     .padding(2.dp)
-                                    .size(20.dp)
+                                    .size(20.dp).clickable {
+                                        val likecount = it.likes + 1
+                                        feedViewModel.updateFeed(it.id,likecount)
+                                    }
                             )
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_comment),
@@ -381,7 +390,7 @@ fun SortListDesc(feed: State<List<FeedEntity>>){
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = "10 likes",
+                                text = "${it.likes} likes",
                                 modifier = Modifier.padding(end = 2.dp),
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold, textAlign = TextAlign.End

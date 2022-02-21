@@ -23,4 +23,10 @@ class FeedViewModel(appObj: Application) : AndroidViewModel(appObj)  {
         }
     }
 
+    fun updateFeed(id:Int,likes:Int) {
+        viewModelScope.launch {
+            feedRepository.updateFeed(id,likes)
+        }
+    }
+
 }

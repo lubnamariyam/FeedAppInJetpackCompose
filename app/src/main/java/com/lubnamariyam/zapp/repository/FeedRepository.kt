@@ -22,4 +22,8 @@ class FeedRepository(application: Application) {
         feedDao.insert(feedEntity)
     }
 
+    suspend fun updateFeed(id: Int, like:Int) {
+        feedDao.updateCartProduct(id,like)
+    }
+
 }

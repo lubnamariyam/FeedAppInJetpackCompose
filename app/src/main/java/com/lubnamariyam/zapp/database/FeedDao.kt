@@ -12,4 +12,8 @@ interface FeedDao {
 
     @Insert
     suspend fun insert(feedEntity: FeedEntity)
+
+    @Query("UPDATE Feed_table SET likes=:like WHERE id = :feedId")
+    suspend fun updateCartProduct(feedId: Int, like: Int)
+
 }
