@@ -1,6 +1,7 @@
 package com.lubnamariyam.zapp.ui.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
@@ -30,18 +32,30 @@ import androidx.navigation.NavController
 import com.lubnamariyam.zapp.R
 import com.lubnamariyam.zapp.database.FeedEntity
 import com.lubnamariyam.zapp.ui.theme.Purple200
+import com.lubnamariyam.zapp.ui.theme.Purple500
 import com.lubnamariyam.zapp.ui.theme.VeryLightGray
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Composable
-fun SearchScreen(feed: State<List<FeedEntity>>){
+fun SearchScreen(feed: State<List<FeedEntity>>,navController: NavController){
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    Column() {
-        Search(state = textState)
-        FeedSearchList(feed,state = textState)
-    }
+    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            Search(state = textState,navController)
+        },
+        content ={
+            FeedSearchList(feed,state = textState)
+        },
+        bottomBar = {
+            BottomBar(navController = navController)
+        }
+    )
 }
+
+
 
 @Composable
 fun FeedSearchList(feed: State<List<FeedEntity>>,state: MutableState<TextFieldValue>) {
@@ -74,65 +88,77 @@ fun FeedSearchList(feed: State<List<FeedEntity>>,state: MutableState<TextFieldVa
 
 
 @Composable
-fun Search(state: MutableState<TextFieldValue>) {
-    TextField(
-        value = state.value,
-        onValueChange = { value ->
-            state.value = value
-        },
-        modifier = Modifier
-            .fillMaxWidth(),
-        textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
-        leadingIcon = {
-            Icon(
-                Icons.Default.Search,
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(15.dp)
-                    .size(24.dp)
-            )
-        },
-        trailingIcon = {
-            if (state.value != TextFieldValue("")) {
-                IconButton(
-                    onClick = {
-                        state.value =
-                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+fun Search(state: MutableState<TextFieldValue> , navController: NavController) {
+    Row(modifier = Modifier
+        .padding(10.dp)
+        .background(Purple500)) {
+        IconButton(onClick = { navController.navigate("home_screen") }, modifier = Modifier.padding(top = 4.dp)) {
+            Icon(Icons.Filled.ArrowBack, contentDescription = null , tint = Color.White)
+        }
+        TextField(
+            value = state.value,
+            onValueChange = { value ->
+                state.value = value
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+            textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(24.dp)
+                )
+            },
+            trailingIcon = {
+                if (state.value != TextFieldValue("")) {
+                    IconButton(
+                        onClick = {
+                            state.value =
+                                TextFieldValue("")
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(15.dp)
+                                .size(24.dp)
+                        )
                     }
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding(15.dp)
-                            .size(24.dp)
-                    )
                 }
-            }
-        },
-        singleLine = true,
-        shape = RectangleShape,
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.Green,
-            cursorColor = Color.Black,
-            leadingIconColor = Color.Black,
-            trailingIconColor = Color.Black,
-            backgroundColor = VeryLightGray,
-            focusedIndicatorColor = Purple200,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+            },
+            singleLine = true,
+            shape = RectangleShape,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.Green,
+                cursorColor = Color.Black,
+                leadingIconColor = Color.Black,
+                trailingIconColor = Color.Black,
+                backgroundColor = VeryLightGray,
+                focusedIndicatorColor = Purple200,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            )
         )
-    )
+    }
+
 }
 
 
 @Composable
 fun FeedSearchCard(it: FeedEntity){
     Card(
-        modifier = Modifier.padding(8.dp, 4.dp),
-        shape = RoundedCornerShape(8.dp), elevation = 4.dp
+        modifier = Modifier
+            .padding(10.dp, 5.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp), elevation = 6.dp
     ) {
-        Column() {
+        Column(modifier = Modifier
+            .padding(10.dp, 5.dp)
+            .fillMaxWidth()) {
             Row(modifier = Modifier.padding(all = 8.dp)) {
                 Image(
                     painter = painterResource(id = R.drawable.profile_pic),
@@ -185,47 +211,8 @@ fun FeedSearchCard(it: FeedEntity){
                     fontFamily = FontFamily.SansSerif
                 )
             }
-            Spacer(modifier = Modifier.padding(4.dp))
-            Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(8.dp))
-            Row(
-                modifier = Modifier
-                    .height(46.dp)
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_like),
-                    tint = Color.DarkGray,
-                    contentDescription = "Like",
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .size(20.dp)
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_comment),
-                    tint = Color.DarkGray,
-                    contentDescription = "Comment",
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .size(20.dp)
-                )
-                Icon(
-                    Icons.Filled.Share,
-                    contentDescription = "Share",
-                    tint = Color.DarkGray,
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .size(20.dp)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "10 likes",
-                    modifier = Modifier.padding(end = 2.dp),
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold, textAlign = TextAlign.End
-                )
-            }
+            //Spacer(modifier = Modifier.padding(4.dp))
         }
     }
 }
+

@@ -1,8 +1,12 @@
 package com.lubnamariyam.zapp.ui.view
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,7 +14,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,10 +33,14 @@ import androidx.navigation.NavController
 import com.lubnamariyam.zapp.R
 import com.lubnamariyam.zapp.database.FeedEntity
 import com.lubnamariyam.zapp.viewModel.FeedViewModel
-import java.util.*
 
 @Composable
-fun Home(feed: State<List<FeedEntity>>, navController: NavController , feedViewModel: FeedViewModel) {
+fun Home(
+    feed: State<List<FeedEntity>>,
+    navController: NavController,
+    feedViewModel: FeedViewModel, activity: Activity
+) {
+
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val sortitem = remember { mutableStateOf(0) }
     Scaffold(
@@ -40,25 +49,34 @@ fun Home(feed: State<List<FeedEntity>>, navController: NavController , feedViewM
         content = {
             when (sortitem.value) {
                 0 -> {
-                    FeedCard(feed,feedViewModel)
+                    FeedCard(feed, feedViewModel)
                 }
                 1 -> {
-                    SortList(feed,feedViewModel)
+                    SortList(feed, feedViewModel)
                 }
                 2 -> {
-                    SortListDesc(feed,feedViewModel)
+                    SortListDesc(feed, feedViewModel)
                 }
             }
         },
         bottomBar = { BottomBar(navController) }
     )
+    BackHandler() {
+        val alertDialogBuilder = AlertDialog.Builder(activity)
+        alertDialogBuilder.setTitle("Exit App")
+        alertDialogBuilder.setMessage("Are you sure you want to exit?")
+        alertDialogBuilder.setPositiveButton("Yes") { _: DialogInterface, _: Int -> activity.finish() }
+        alertDialogBuilder.setNegativeButton("No", { dialogInterface: DialogInterface, i: Int -> })
+        alertDialogBuilder.create()
+        alertDialogBuilder.show()
+    }
 }
 
 
-
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FeedCard(feed: State<List<FeedEntity>> , feedViewModel: FeedViewModel) {
-    LazyColumn( content = {
+fun FeedCard(feed: State<List<FeedEntity>>, feedViewModel: FeedViewModel) {
+    LazyColumn(content = {
         items(
             items = feed.value,
             itemContent = {
@@ -86,7 +104,7 @@ fun FeedCard(feed: State<List<FeedEntity>> , feedViewModel: FeedViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "Android Developer at Zoho",
+                                    text = "Android Developer at SkyWorks",
                                     color = Color.Gray,
                                     modifier = Modifier.padding(start = 4.dp),
                                     style = MaterialTheme.typography.body2
@@ -120,7 +138,11 @@ fun FeedCard(feed: State<List<FeedEntity>> , feedViewModel: FeedViewModel) {
                             )
                         }
                         Spacer(modifier = Modifier.padding(4.dp))
-                        Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(8.dp))
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(8.dp)
+                        )
                         Row(
                             modifier = Modifier
                                 .height(46.dp)
@@ -128,56 +150,65 @@ fun FeedCard(feed: State<List<FeedEntity>> , feedViewModel: FeedViewModel) {
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_like),
-                                tint = Color.DarkGray,
-                                contentDescription = "Like",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp).clickable {
-                                        val likecount = it.likes + 1
-                                        feedViewModel.updateFeed(it.id,likecount)
-                                    }
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_comment),
-                                tint = Color.DarkGray,
-                                contentDescription = "Comment",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp)
-                            )
-                            Icon(
-                                Icons.Filled.Share,
-                                contentDescription = "Share",
-                                tint = Color.DarkGray,
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp)
-                            )
+                            IconButton(onClick = {
+                                val likecount = it.likes + 1
+                                feedViewModel.updateFeed(it.id, likecount)
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_like),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_comment),
+                                    tint = Color.DarkGray,
+                                    contentDescription = "Comment",
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    Icons.Filled.Share,
+                                    contentDescription = "Share",
+                                    tint = Color.DarkGray,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
                                 text = "${it.likes} likes",
-                                modifier = Modifier.padding(end = 2.dp),
+                                modifier = Modifier
+                                    .padding(end = 2.dp),
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold, textAlign = TextAlign.End
                             )
+
+
                         }
                     }
                 }
-            })})
+            })
+    })
 
 }
 
 @Composable
-fun SortList(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
+fun SortList(feed: State<List<FeedEntity>>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
         val sortasc = arrayListOf<FeedEntity>()
         feed.value.sortedBy { it.title }.forEach {
             sortasc.add(it)
         }
         items(
-            items = sortasc , itemContent = {
+            items = sortasc, itemContent = {
                 Card(
                     modifier = Modifier.padding(8.dp, 4.dp),
                     shape = RoundedCornerShape(8.dp), elevation = 4.dp
@@ -236,7 +267,11 @@ fun SortList(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
                             )
                         }
                         Spacer(modifier = Modifier.padding(4.dp))
-                        Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(8.dp))
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(8.dp)
+                        )
                         Row(
                             modifier = Modifier
                                 .height(46.dp)
@@ -244,33 +279,38 @@ fun SortList(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_like),
-                                tint = Color.DarkGray,
-                                contentDescription = "Like",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp).clickable {
-                                        val likecount = it.likes + 1
-                                        feedViewModel.updateFeed(it.id,likecount)
-                                    }
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_comment),
-                                tint = Color.DarkGray,
-                                contentDescription = "Comment",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp)
-                            )
-                            Icon(
-                                Icons.Filled.Share,
-                                contentDescription = "Share",
-                                tint = Color.DarkGray,
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp)
-                            )
+                            IconButton(onClick = {
+                                val likecount = it.likes + 1
+                                feedViewModel.updateFeed(it.id, likecount)
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_like),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_comment),
+                                    tint = Color.DarkGray,
+                                    contentDescription = "Comment",
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    Icons.Filled.Share,
+                                    contentDescription = "Share",
+                                    tint = Color.DarkGray,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
                                 text = "${it.likes} likes",
@@ -287,14 +327,14 @@ fun SortList(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
 }
 
 @Composable
-fun SortListDesc(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
+fun SortListDesc(feed: State<List<FeedEntity>>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
         val sortasc = arrayListOf<FeedEntity>()
         feed.value.sortedByDescending { it.title }.forEach {
             sortasc.add(it)
         }
         items(
-            items = sortasc , itemContent = {
+            items = sortasc, itemContent = {
                 Card(
                     modifier = Modifier.padding(8.dp, 4.dp),
                     shape = RoundedCornerShape(8.dp), elevation = 4.dp
@@ -353,7 +393,11 @@ fun SortListDesc(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
                             )
                         }
                         Spacer(modifier = Modifier.padding(4.dp))
-                        Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(8.dp))
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(8.dp)
+                        )
                         Row(
                             modifier = Modifier
                                 .height(46.dp)
@@ -361,33 +405,38 @@ fun SortListDesc(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_like),
-                                tint = Color.DarkGray,
-                                contentDescription = "Like",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp).clickable {
-                                        val likecount = it.likes + 1
-                                        feedViewModel.updateFeed(it.id,likecount)
-                                    }
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_comment),
-                                tint = Color.DarkGray,
-                                contentDescription = "Comment",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp)
-                            )
-                            Icon(
-                                Icons.Filled.Share,
-                                contentDescription = "Share",
-                                tint = Color.DarkGray,
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(20.dp)
-                            )
+                            IconButton(onClick = {
+                                val likecount = it.likes + 1
+                                feedViewModel.updateFeed(it.id, likecount)
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_like),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_comment),
+                                    tint = Color.DarkGray,
+                                    contentDescription = "Comment",
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    Icons.Filled.Share,
+                                    contentDescription = "Share",
+                                    tint = Color.DarkGray,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(24.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
                                 text = "${it.likes} likes",
@@ -405,9 +454,9 @@ fun SortListDesc(feed: State<List<FeedEntity>>,feedViewModel: FeedViewModel){
 
 
 @Composable
-fun TopBar(sort : MutableState<Int>) {
+fun TopBar(sort: MutableState<Int>) {
     val expanded = remember { mutableStateOf(false) }
-    val menuItems = listOf("Sort A-Z", "Sort Z-A", )
+    val menuItems = listOf("Sort A-Z", "Sort Z-A")
 
     TopAppBar(
         title = {
@@ -420,7 +469,6 @@ fun TopBar(sort : MutableState<Int>) {
         },
         actions = {
             IconButton(onClick = {
-
                 expanded.value = true
             }) {
                 Icon(
@@ -433,7 +481,6 @@ fun TopBar(sort : MutableState<Int>) {
                 offset = DpOffset((-40).dp, (-40).dp),
                 onDismissRequest = { expanded.value = false }) {
                 menuItems.forEach {
-
                     DropdownMenuItem(onClick = {
                         when (it) {
                             "Sort A-Z" -> {
@@ -456,11 +503,11 @@ fun TopBar(sort : MutableState<Int>) {
     )
 }
 
+
 @Composable
 fun BottomBar(navController: NavController) {
     val selectedIndex = remember { mutableStateOf(0) }
-    BottomNavigation(elevation = 10.dp) {
-
+    BottomNavigation(elevation = 10.dp, modifier = Modifier.height(60.dp)) {
         BottomNavigationItem(icon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_feed),
@@ -501,6 +548,7 @@ fun BottomBar(navController: NavController) {
             selected = (selectedIndex.value == 2),
             onClick = {
                 selectedIndex.value = 2
+                navController.navigate("notification_screen")
             })
 
         BottomNavigationItem(icon = {
@@ -514,6 +562,7 @@ fun BottomBar(navController: NavController) {
             selected = (selectedIndex.value == 3),
             onClick = {
                 selectedIndex.value = 3
+                navController.navigate("settings_screen")
             })
 
 
