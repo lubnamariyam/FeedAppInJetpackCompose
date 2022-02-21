@@ -63,7 +63,6 @@ class MainActivity : ComponentActivity() {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.putInt("id_key", 1)
             editor.apply()
-            editor.commit()
         } catch (e: Exception) {
             e.stackTrace
         }
