@@ -2,7 +2,6 @@ package com.lubnamariyam.zapp
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,7 +23,7 @@ import com.lubnamariyam.zapp.viewModel.HomeViewModel
 
 class MainActivity : ComponentActivity() {
     private val homeViewModel by viewModels<HomeViewModel>()
-    var feedViewModel: FeedViewModel? = null
+    private var feedViewModel: FeedViewModel? = null
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +55,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun insertData(feed: List<FeedDataItem>) {
+    private fun insertData(feed: List<FeedDataItem>) {
         try {
             for (i in feed) {
                 val feedEntity = FeedEntity(i.id, i.title, i.body, i.userId, 0)
@@ -65,7 +64,7 @@ class MainActivity : ComponentActivity() {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.putInt("id_key", 1)
             editor.apply()
-            editor.commit()
+            editor.apply()
         } catch (e: Exception) {
             e.stackTrace
         }

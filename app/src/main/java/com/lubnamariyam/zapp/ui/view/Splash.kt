@@ -46,7 +46,11 @@ fun SplashScreen(navController: NavController) {
     }
 
     // Image -> Logo
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             contentAlignment = Alignment.Center, modifier = Modifier.padding(top = 70.dp)
         ) {
@@ -59,13 +63,23 @@ fun SplashScreen(navController: NavController) {
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Z App",
+            Text(
+                text = "Z App",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Medium, textAlign = TextAlign.Center , color = Purple500 , fontFamily = FontFamily.SansSerif
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                color = Purple500,
+                fontFamily = FontFamily.SansSerif
             )
             Spacer(modifier = Modifier.padding(4.dp))
-            Text(text = "Connecting People !!" , textAlign = TextAlign.Center , color = Purple500,fontSize = 14.sp,fontFamily = FontFamily.SansSerif
-                ,fontWeight = FontWeight.Light)
+            Text(
+                text = "Connecting People !!",
+                textAlign = TextAlign.Center,
+                color = Purple500,
+                fontSize = 14.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Light
+            )
         }
 
     }

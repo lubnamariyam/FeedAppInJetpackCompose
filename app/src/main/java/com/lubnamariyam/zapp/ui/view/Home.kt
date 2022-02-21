@@ -48,12 +48,12 @@ fun Home(
 ) {
 
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    val sortitem = remember { mutableStateOf(0) }
+    val sortItem = remember { mutableStateOf(0) }
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { TopBar(sortitem) },
+        topBar = { TopBar(sortItem) },
         content = {
-            when (sortitem.value) {
+            when (sortItem.value) {
                 0 -> {
                     FeedCard(feed, feedViewModel)
                 }
@@ -69,12 +69,12 @@ fun Home(
         bottomBar = { BottomBar(navController) }
 
     )
-    BackHandler() {
+    BackHandler {
         val alertDialogBuilder = AlertDialog.Builder(activity)
         alertDialogBuilder.setTitle("Exit App")
         alertDialogBuilder.setMessage("Are you sure you want to exit?")
         alertDialogBuilder.setPositiveButton("Yes") { _: DialogInterface, _: Int -> activity.finish() }
-        alertDialogBuilder.setNegativeButton("No", { dialogInterface: DialogInterface, i: Int -> })
+        alertDialogBuilder.setNegativeButton("No") { _: DialogInterface, _: Int -> }
         alertDialogBuilder.create()
         alertDialogBuilder.show()
     }
@@ -85,12 +85,12 @@ fun Home(
 @Composable
 fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
-        itemsIndexed(feed) { index, value ->
+        itemsIndexed(feed) { _, value ->
             Card(
                 modifier = Modifier.padding(8.dp, 4.dp),
                 shape = RoundedCornerShape(8.dp), elevation = 4.dp
             ) {
-                Column() {
+                Column {
                     Row(modifier = Modifier.padding(all = 8.dp)) {
                         Image(
                             painter = painterResource(id = R.drawable.profile_pic),
@@ -101,7 +101,7 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                                 .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Column() {
+                        Column {
                             Text(
                                 text = "Ricardlo Chandler",
                                 color = MaterialTheme.colors.primary,
@@ -157,8 +157,8 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = {
-                            val likecount = value!!.likes + 1
-                            feedViewModel.updateFeed(value.id, likecount)
+                            val likeCount = value!!.likes + 1
+                            feedViewModel.updateFeed(value.id, likeCount)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_like),
@@ -206,6 +206,7 @@ fun FeedCard(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                     is LoadState.Loading -> {
                         CircularProgressIndicator()
                     }
+                    else -> {}
                 }
             }
 
@@ -220,12 +221,12 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
     LazyColumn(content = {
         val sortAsc = arrayListOf<FeedEntity>()
         feed.itemSnapshotList.items.sortedBy { it.title }.forEach { sortAsc.add(it) }
-        items(items = sortAsc , itemContent ={
+        items(items = sortAsc, itemContent = {
             Card(
                 modifier = Modifier.padding(8.dp, 4.dp),
                 shape = RoundedCornerShape(8.dp), elevation = 4.dp
             ) {
-                Column() {
+                Column {
                     Row(modifier = Modifier.padding(all = 8.dp)) {
                         Image(
                             painter = painterResource(id = R.drawable.profile_pic),
@@ -236,7 +237,7 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                                 .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Column() {
+                        Column {
                             Text(
                                 text = "Ricardlo Chandler",
                                 color = MaterialTheme.colors.primary,
@@ -275,7 +276,7 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             modifier = Modifier.padding(),
-                            fontFamily = FontFamily.SansSerif,color = Color.Gray
+                            fontFamily = FontFamily.SansSerif, color = Color.Gray
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
@@ -292,8 +293,8 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = {
-                            val likecount = it.likes + 1
-                            feedViewModel.updateFeed(it.id, likecount)
+                            val likeCount = it.likes + 1
+                            feedViewModel.updateFeed(it.id, likeCount)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_like),
@@ -333,7 +334,7 @@ fun SortList(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel) {
                     }
                 }
             }
-        } )
+        })
     })
 }
 
@@ -342,12 +343,12 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
     LazyColumn(content = {
         val sortDesc = arrayListOf<FeedEntity>()
         feed.itemSnapshotList.items.sortedByDescending { it.title }.forEach { sortDesc.add(it) }
-        items(items = sortDesc , itemContent ={
+        items(items = sortDesc, itemContent = {
             Card(
                 modifier = Modifier.padding(8.dp, 4.dp),
                 shape = RoundedCornerShape(8.dp), elevation = 4.dp
             ) {
-                Column() {
+                Column {
                     Row(modifier = Modifier.padding(all = 8.dp)) {
                         Image(
                             painter = painterResource(id = R.drawable.profile_pic),
@@ -358,7 +359,7 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                                 .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Column() {
+                        Column {
                             Text(
                                 text = "Ricardlo Chandler",
                                 color = MaterialTheme.colors.primary,
@@ -397,7 +398,7 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             modifier = Modifier.padding(),
-                            fontFamily = FontFamily.SansSerif,color = Color.Gray
+                            fontFamily = FontFamily.SansSerif, color = Color.Gray
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
@@ -414,8 +415,8 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = {
-                            val likecount = it.likes + 1
-                            feedViewModel.updateFeed(it.id, likecount)
+                            val likeCount = it.likes + 1
+                            feedViewModel.updateFeed(it.id, likeCount)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_like),
@@ -455,7 +456,7 @@ fun SortListDesc(feed: LazyPagingItems<FeedEntity>, feedViewModel: FeedViewModel
                     }
                 }
             }
-        } )
+        })
     })
 }
 

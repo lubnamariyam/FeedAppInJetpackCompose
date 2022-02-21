@@ -1,7 +1,6 @@
-package com.lubnamariyam.lubsboutique.repository
+package com.lubnamariyam.zapp.repository
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import com.lubnamariyam.zapp.database.FeedDao
 import com.lubnamariyam.zapp.database.FeedEntity
@@ -15,16 +14,16 @@ class FeedRepository(application: Application) {
         feedDao = database.feedDao()
     }
 
-    fun readAllData() : PagingSource<Int, FeedEntity> {
-        return  feedDao.getAll()
+    fun readAllData(): PagingSource<Int, FeedEntity> {
+        return feedDao.getAll()
     }
 
     suspend fun insertFeed(feedEntity: FeedEntity) {
         feedDao.insert(feedEntity)
     }
 
-    suspend fun updateFeed(id: Int, like:Int) {
-        feedDao.updateCartProduct(id,like)
+    suspend fun updateFeed(id: Int, like: Int) {
+        feedDao.updateCartProduct(id, like)
     }
 
 }

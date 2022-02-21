@@ -5,18 +5,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.*
 import com.lubnamariyam.zapp.R
-import com.lubnamariyam.zapp.ui.theme.Purple200
-import com.lubnamariyam.zapp.ui.theme.VeryLightGray
 
 @Composable
 fun Notification(navController: NavController) {
@@ -30,8 +30,12 @@ fun Notification(navController: NavController) {
 }
 
 @Composable
-fun NotificationContent(){
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+fun NotificationContent() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         val isPlaying by remember {
             mutableStateOf(true)
         }
@@ -55,7 +59,12 @@ fun NotificationContent(){
             modifier = Modifier.size(250.dp)
         )
         Spacer(modifier = Modifier.padding(10.dp))
-        Text(text = "No Notification's Found", textAlign = TextAlign.Center , color = Color.LightGray, modifier = Modifier.padding(bottom = 20.dp))
+        Text(
+            text = "No Notification's Found",
+            textAlign = TextAlign.Center,
+            color = Color.LightGray,
+            modifier = Modifier.padding(bottom = 20.dp)
+        )
     }
 }
 
@@ -66,7 +75,7 @@ fun TopBar(navController: NavController) {
             Text(text = "Notification")
         },
         navigationIcon = {
-            IconButton(onClick = {navController.navigate("home_screen")}) {
+            IconButton(onClick = { navController.navigate("home_screen") }) {
                 Icon(Icons.Filled.ArrowBack, "Navigation")
             }
         },

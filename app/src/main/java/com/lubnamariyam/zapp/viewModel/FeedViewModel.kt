@@ -2,26 +2,25 @@ package com.lubnamariyam.zapp.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.lubnamariyam.lubsboutique.repository.FeedRepository
 import com.lubnamariyam.zapp.database.FeedEntity
+import com.lubnamariyam.zapp.repository.FeedRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
-class FeedViewModel(appObj: Application) : AndroidViewModel(appObj)  {
+class FeedViewModel(appObj: Application) : AndroidViewModel(appObj) {
 
     private val feedRepository: FeedRepository = FeedRepository(appObj)
-    val eventSearchQuery = MutableStateFlow("")
+    private val paging = MutableStateFlow("")
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val getPagingData = eventSearchQuery.flatMapLatest {
+    val getPagingData = paging.flatMapLatest {
         Pager(config = PagingConfig(
             pageSize = 10,
             enablePlaceholders = true
@@ -40,9 +39,9 @@ class FeedViewModel(appObj: Application) : AndroidViewModel(appObj)  {
         }
     }
 
-    fun updateFeed(id:Int,likes:Int) {
+    fun updateFeed(id: Int, likes: Int) {
         viewModelScope.launch {
-            feedRepository.updateFeed(id,likes)
+            feedRepository.updateFeed(id, likes)
         }
     }
 

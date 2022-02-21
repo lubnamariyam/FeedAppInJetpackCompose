@@ -12,9 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -22,9 +23,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,19 +35,18 @@ import com.lubnamariyam.zapp.ui.theme.Purple200
 import com.lubnamariyam.zapp.ui.theme.Purple500
 import com.lubnamariyam.zapp.ui.theme.VeryLightGray
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Composable
-fun SearchScreen(feed: LazyPagingItems<FeedEntity>, navController: NavController){
+fun SearchScreen(feed: LazyPagingItems<FeedEntity>, navController: NavController) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            Search(state = textState,navController)
+            Search(state = textState, navController)
         },
-        content ={
-            FeedSearchList(feed,state = textState)
+        content = {
+            FeedSearchList(feed, state = textState)
         },
         bottomBar = {
             BottomBar(navController = navController)
@@ -57,23 +55,23 @@ fun SearchScreen(feed: LazyPagingItems<FeedEntity>, navController: NavController
 }
 
 
-
 @Composable
-fun FeedSearchList(feed: LazyPagingItems<FeedEntity>,state: MutableState<TextFieldValue>) {
-    var persons = feed.itemSnapshotList.items
+fun FeedSearchList(feed: LazyPagingItems<FeedEntity>, state: MutableState<TextFieldValue>) {
+    val persons = feed.itemSnapshotList.items
     var filteredPerson: ArrayList<FeedEntity> = arrayListOf()
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         val searchedText = state.value.text
-        if(searchedText.isNotEmpty()){
+        if (searchedText.isNotEmpty()) {
             val resultList = ArrayList<FeedEntity>()
             for (person in persons) {
-                if (person.title.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))
+                if (person.title.lowercase(Locale.getDefault())
+                        .contains(searchedText.lowercase(Locale.getDefault()))
                 ) {
                     resultList.add(person)
                 }
             }
             filteredPerson = resultList
-        }else{
+        } else {
             filteredPerson.clear()
         }
 
@@ -86,14 +84,18 @@ fun FeedSearchList(feed: LazyPagingItems<FeedEntity>,state: MutableState<TextFie
 }
 
 
-
 @Composable
-fun Search(state: MutableState<TextFieldValue> , navController: NavController) {
-    Row(modifier = Modifier
-        .padding(10.dp)
-        .background(Purple500)) {
-        IconButton(onClick = { navController.navigate("home_screen") }, modifier = Modifier.padding(top = 4.dp)) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = null , tint = Color.White)
+fun Search(state: MutableState<TextFieldValue>, navController: NavController) {
+    Row(
+        modifier = Modifier
+            .padding(10.dp)
+            .background(Purple500)
+    ) {
+        IconButton(
+            onClick = { navController.navigate("home_screen") },
+            modifier = Modifier.padding(top = 4.dp)
+        ) {
+            Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color.White)
         }
         TextField(
             value = state.value,
@@ -149,16 +151,18 @@ fun Search(state: MutableState<TextFieldValue> , navController: NavController) {
 
 
 @Composable
-fun FeedSearchCard(it: FeedEntity){
+fun FeedSearchCard(it: FeedEntity) {
     Card(
         modifier = Modifier
             .padding(10.dp, 5.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp), elevation = 6.dp
     ) {
-        Column(modifier = Modifier
-            .padding(10.dp, 5.dp)
-            .fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .padding(10.dp, 5.dp)
+                .fillMaxWidth()
+        ) {
             Row(modifier = Modifier.padding(all = 8.dp)) {
                 Image(
                     painter = painterResource(id = R.drawable.profile_pic),
@@ -169,7 +173,7 @@ fun FeedSearchCard(it: FeedEntity){
                         .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Column() {
+                Column {
                     Text(
                         text = "Ricardlo Chandler",
                         color = MaterialTheme.colors.primary,
