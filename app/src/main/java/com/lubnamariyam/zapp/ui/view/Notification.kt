@@ -1,6 +1,7 @@
 package com.lubnamariyam.zapp.ui.view
 
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,9 @@ fun Notification(navController: NavController) {
         NotificationContent()
     }, bottomBar = {
         BottomBar(navController = navController)
+        BackHandler() {
+            navController.navigate("home_screen")
+        }
     })
 }
 

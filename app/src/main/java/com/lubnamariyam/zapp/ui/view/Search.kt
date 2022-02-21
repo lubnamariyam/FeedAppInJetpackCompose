@@ -1,5 +1,6 @@
 package com.lubnamariyam.zapp.ui.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -50,6 +51,9 @@ fun SearchScreen(feed: LazyPagingItems<FeedEntity>, navController: NavController
         },
         bottomBar = {
             BottomBar(navController = navController)
+            BackHandler() {
+                navController.navigate("home_screen")
+            }
         }
     )
 }
