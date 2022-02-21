@@ -13,6 +13,7 @@ App Consists of data loaded from API using Retrofit and stores API data in ROOM 
 ## SCREENS
 ###### SPLASH SCREEN 
 ###### FEED SCREEN
+###### SEARCH SCREEN
 ###### NOTIFICATION
 ###### SETTINGS
 # APK
