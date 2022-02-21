@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lubnamariyam.zapp.model.FeedDataItem
 import com.lubnamariyam.zapp.ui.view.Home
+import com.lubnamariyam.zapp.ui.view.SearchScreen
 import com.lubnamariyam.zapp.ui.view.SplashScreen
 import com.lubnamariyam.zapp.viewModel.FeedViewModel
 import com.lubnamariyam.zapp.viewModel.HomeViewModel
@@ -21,8 +22,14 @@ fun NavGraph(feedViewModel: FeedViewModel){
         }
         composable("home_screen") {
             val data = feedViewModel.getAllProduct().observeAsState(arrayListOf())
-            Home(data)
+            Home(data,navController)
         }
+
+        composable("search_screen") {
+            val data = feedViewModel.getAllProduct().observeAsState(arrayListOf())
+            SearchScreen(data)
+        }
+
 
     }
 }
