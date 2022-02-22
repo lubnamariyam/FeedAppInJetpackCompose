@@ -9,7 +9,7 @@ Feed app displays a list of feeds and allows searching for feeds in the same. Us
 ###### MATERIAL DESIGN
 ###### ANIMATION
 # DESCRIPTION
-App Consists of data loaded from API using Retrofit and stores API data in ROOM Database and Feed screen with list from Locally stored database with Lazy List of LazyPagingItems - Pagination into Lazy Column and Implemented the favorite (Like) option handled offline and also Implemented Sort List by A - Z and Z - A and the Search Screen to search the data from database and loaad into the cardview , Notifications screen with Lotte Animation and a text , Settings screen -> Lotte Animation.
+App Consists of data loaded from API using Retrofit and stores API data in ROOM Database and Feed screen with list from Locally stored database with Lazy List of LazyPagingItems - Pagination into Lazy Column and Implemented the favorite (Like) option handled offline and also Implemented Sort List by A - Z and Z - A and the Search Screen to search the data from database and load into the Lazy column cardview & Notifications screen with Lotte Animation and a text , Settings screen -> Lotte Animation.
 ## SCREENS
 ###### SPLASH SCREEN 
 ###### FEED SCREEN
